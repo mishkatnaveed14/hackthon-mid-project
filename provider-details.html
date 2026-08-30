@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Service Details - QuickServe</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark py-3">
+    <div class="container">
+      <a class="navbar-brand brand-logo fs-3" href="index.html">QuickServe</a>
+      <div id="navActions"></div>
+    </div>
+  </nav>
+
+  <div class="container my-5" style="max-width: 750px;">
+    <div id="providerHeader" class="card border-0 shadow-sm p-4 mb-4 rounded-4">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+
+    <div class="card border-0 shadow-sm p-4 rounded-4">
+      <h4 class="fw-bold mb-4">Complete Booking Details</h4>
+      <form id="bookingForm">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Service Type</label>
+          <input type="text" id="serviceInput" class="form-control" readonly required>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Preferred Date</label>
+            <input type="date" id="dateInput" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Preferred Time</label>
+            <input type="time" id="timeInput" class="form-control" required>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Service Address</label>
+          <input type="text" id="locationInput" class="form-control" placeholder="House / Office Street Address" required>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Description of Work</label>
+          <textarea id="descInput" class="form-control" rows="3" placeholder="Explain what issue you need resolved..." required></textarea>
+        </div>
+        <button type="submit" id="submitBtn" class="btn btn-primary-custom w-100 py-3 fs-5">Confirm Booking Request</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+  <script type="module">
+    import { getDataById, createData } from './firebase.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const providerId = urlParams.get('id');
+    let providerData = null;
+
+    async function loadDetails() {
+      if (!providerId) { window.location.href = "index.html"; return; }
+      
+      const res = await getDataById("providers", providerId);
+      if (!res.success) {
+        alert("Provider details not found.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      providerData = res.data;
+      document.getElementById("providerHeader").innerHTML = `
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="badge-category mb-2 d-inline-block">${providerData.category}</span>
+            <h2 class="fw-bold mb-1">${providerData.name}</h2>
+            <p class="text-muted mb-0">📍 ${providerData.location} • 💼 ${providerData.experience} Experience</p>
+          </div>
+          <div class="text-end">
+            <div class="fs-4 fw-bold text-dark">Rs. ${providerData.price}</div>
+            <div class="text-warning small">★ ${providerData.rating || '5.0'} Rating</div>
+          </div>
+        </div>
+      `;
+      document.getElementById("serviceInput").value = providerData.category;
+    }
+
+    document.getElementById("bookingForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
+        alert("Please sign in to complete a booking.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const btn = document.getElementById("submitBtn");
+      btn.disabled = true;
+      btn.innerText = "Submitting...";
+
+      // Mandated Requirement: Unique Booking ID Generation
+      const bookingUniqueId = 'BK-' + Math.floor(100000 + Math.random() * 900000);
+
+      const bookingPayload = {
+        bookingId: bookingUniqueId,
+        customerId: user.uid,
+        customerEmail: user.email,
+        providerId: providerId,
+        providerName: providerData.name,
+        serviceCategory: providerData.category,
+        date: document.getElementById("dateInput").value,
+        time: document.getElementById("timeInput").value,
+        location: document.getElementById("locationInput").value,
+        description: document.getElementById("descInput").value,
+        status: "Pending",
+        review: null
+      };
+
+      const res = await createData("bookings", null, bookingPayload);
+
+      if (res.success) {
+        alert(`Booking Placed! Your Unique Booking ID is ${bookingUniqueId}`);
+        window.location.href = "customer-dash.html";
+      } else {
+        alert("Booking Error: " + res.error);
+        btn.disabled = false;
+        btn.innerText = "Confirm Booking Request";
+      }
+    });
+
+    loadDetails();
+  </script>
+</body>
+</html>

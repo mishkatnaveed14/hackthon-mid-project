@@ -1,0 +1,87 @@
+:root {
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
+  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  --card-bg: #ffffff;
+  --border-radius: 14px;
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+body {
+  background: var(--bg-gradient);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #1e293b;
+  min-height: 100vh;
+}
+
+.navbar {
+  background: #0f172a !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.brand-logo {
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #ffffff !important;
+}
+
+.provider-card {
+  background: var(--card-bg);
+  border: 1px solid #e2e8f0;
+  border-radius: var(--border-radius);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.provider-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.badge-category {
+  background-color: #e0e7ff;
+  color: #3730a3;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.status-Pending { background: #fef3c7; color: #92400e; }
+.status-Accepted { background: #dbeafe; color: #1e40af; }
+.status-In-Progress { background: #e0e7ff; color: #3730a3; }
+.status-Completed { background: #dcfce7; color: #166534; }
+.status-Rejected { background: #fee2e2; color: #991b1b; }
+
+.form-control, .form-select {
+  border-radius: 10px;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+.btn-primary-custom {
+  background-color: var(--primary-color);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 10px 20px;
+  border: none;
+  transition: background 0.2s ease;
+}
+
+.btn-primary-custom:hover {
+  background-color: var(--primary-hover);
+  color: #fff;
+}
