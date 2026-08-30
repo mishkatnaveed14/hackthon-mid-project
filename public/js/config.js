@@ -3,19 +3,19 @@
 // =============================================================
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyCdVckxscetRZzlsIp1R6q4UFxWM8-mPfQ",
-  authDomain: "femhack-template.firebaseapp.com",
-  projectId: "femhack-template",
-  storageBucket: "femhack-template.firebasestorage.app",
-  messagingSenderId: "160729730748",
-  appId: "1:160729730748:web:b865ad6dfb02170e408ab9"
+  apiKey: "AIzaSyAvZc5kUc_dEXpUMf9RJweJprsE2acrOi8",
+  authDomain: "mid-hackathon-project-c7e0a.firebaseapp.com",
+  projectId: "mid-hackathon-project-c7e0a",
+  storageBucket: "mid-hackathon-project-c7e0a.firebasestorage.app",
+  messagingSenderId: "583423653697",
+  appId: "1:583423653697:web:639fca58e623f6c7cd53c0"
 };
 
 // ---- Cloudinary (unsigned upload) — used for provider & profile images ----
 // Create an unsigned upload preset in your Cloudinary dashboard and set it here.
 export const cloudinaryConfig = {
-  cloudName: "ie54wile",
-  uploadPreset: "femhack",
+  cloudName: "mlazbr7f",
+  uploadPreset: "my_preset",
 };
 
 // True when Firebase has real credentials (not the placeholders above).
