@@ -25,9 +25,9 @@ export const firebaseReady = false;
 
 export const cloudinaryReady =
   cloudinaryConfig.cloudName &&
-  !cloudinaryConfig.cloudName.startsWith("YOUR_") &&
+  !cloudinaryConfig.cloudName.startsWith("mlazbr7f") &&
   cloudinaryConfig.uploadPreset &&
-  !cloudinaryConfig.uploadPreset.startsWith("YOUR_");
+  !cloudinaryConfig.uploadPreset.startsWith("my_preset");
 
 export const SERVICE_CATEGORIES = [
   { id: "plumbing", name: "Plumbing", icon: "bi-droplet-half" },
