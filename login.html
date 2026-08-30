@@ -2,123 +2,81 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login & Register - QuickServe</title>
+  <title>Sign In / Register - QuickServe</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-light d-flex align-items-center justify-content-center" style="min-height: 100vh;">
-  <div class="card shadow-sm border-0 p-4" style="width: 100%; max-width: 450px;">
-    <h3 class="fw-bold text-center mb-4" id="formTitle">User Sign In</h3>
+<body class="d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+  <div class="card border-0 shadow-lg p-4 rounded-4" style="width: 100%; max-width: 420px;">
+    <h3 class="fw-bold text-center mb-4" id="authTitle">Welcome to QuickServe</h3>
     
     <form id="authForm">
-      <div class="mb-3" id="nameField" style="display: none;">
-        <label class="form-label">Full Name</label>
+      <div class="mb-3" id="nameBox" style="display: none;">
+        <label class="form-label fw-semibold">Full Name</label>
         <input type="text" id="nameInput" class="form-control">
       </div>
-      
-      <div class="mb-3" id="roleField" style="display: none;">
-        <label class="form-label">Register As</label>
-        <select id="roleSelect" class="form-select">
+      <div class="mb-3" id="roleBox" style="display: none;">
+        <label class="form-label fw-semibold">Select Account Role</label>
+        <select id="roleInput" class="form-select">
           <option value="customer">Customer</option>
           <option value="provider">Service Provider</option>
         </select>
       </div>
-
-      <!-- Additional Provider Fields dynamically shown if role is provider -->
-      <div id="providerFields" style="display: none;">
-        <div class="mb-2">
-          <label class="form-label">Category</label>
-          <select id="catSelect" class="form-select">
-            <option value="Plumbing">Plumbing</option>
-            <option value="Electrical">Electrical</option>
-            <option value="Cleaning">Cleaning</option>
-            <option value="AC Repair">AC Repair</option>
-          </select>
-        </div>
-        <div class="mb-2"><input type="text" id="locInput" class="form-control" placeholder="City / Location"></div>
-        <div class="mb-2"><input type="text" id="expInput" class="form-control" placeholder="Experience (e.g. 3 Years)"></div>
-        <div class="mb-2"><input type="number" id="priceInput" class="form-control" placeholder="Price (Rs.)"></div>
-      </div>
-
       <div class="mb-3">
-        <label class="form-label">Email address</label>
+        <label class="form-label fw-semibold">Email Address</label>
         <input type="email" id="emailInput" class="form-control" required>
       </div>
-      
-      <div class="mb-3">
-        <label class="form-label">Password</label>
+      <div class="mb-4">
+        <label class="form-label fw-semibold">Password</label>
         <input type="password" id="passInput" class="form-control" required>
       </div>
-
-      <button type="submit" id="submitAuthBtn" class="btn btn-primary w-100 mb-3">Sign In</button>
-      <div class="text-center">
-        <a href="#" id="toggleAuthMode" class="small text-decoration-none">Don't have an account? Register</a>
-      </div>
+      <button type="submit" id="authSubmitBtn" class="btn btn-primary-custom w-100 py-2 mb-3">Sign In</button>
     </form>
+
+    <button id="googleBtn" class="btn btn-outline-dark w-100 mb-3">Sign In with Google</button>
+
+    <div class="text-center">
+      <a href="#" id="toggleAuth" class="text-decoration-none small text-muted">New user? Register an Account</a>
+    </div>
   </div>
 
+  <script type="module" src="app.js"></script>
   <script type="module">
-    import { db, auth } from './firebase-config.js';
-    import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { registerUser, loginUser, loginWithGoogle } from './firebase.js';
 
-    let isRegisterMode = false;
+    let isRegister = false;
 
-    const toggleBtn = document.getElementById('toggleAuthMode');
-    const roleSelect = document.getElementById('roleSelect');
-
-    toggleBtn.addEventListener('click', (e) => {
+    document.getElementById("toggleAuth").addEventListener("click", (e) => {
       e.preventDefault();
-      isRegisterMode = !isRegisterMode;
-      document.getElementById('formTitle').innerText = isRegisterMode ? "Create Account" : "User Sign In";
-      document.getElementById('nameField').style.display = isRegisterMode ? "block" : "none";
-      document.getElementById('roleField').style.display = isRegisterMode ? "block" : "none";
-      document.getElementById('submitAuthBtn').innerText = isRegisterMode ? "Register" : "Sign In";
-      toggleBtn.innerText = isRegisterMode ? "Already have an account? Sign In" : "Don't have an account? Register";
+      isRegister = !isRegister;
+      document.getElementById("authTitle").innerText = isRegister ? "Create QuickServe Account" : "Welcome to QuickServe";
+      document.getElementById("nameBox").style.display = isRegister ? "block" : "none";
+      document.getElementById("roleBox").style.display = isRegister ? "block" : "none";
+      document.getElementById("authSubmitBtn").innerText = isRegister ? "Register Account" : "Sign In";
+      document.getElementById("toggleAuth").innerText = isRegister ? "Already registered? Sign In" : "New user? Register an Account";
     });
 
-    roleSelect.addEventListener('change', () => {
-      document.getElementById('providerFields').style.display = (isRegisterMode && roleSelect.value === 'provider') ? 'block' : 'none';
-    });
-
-    document.getElementById('authForm').addEventListener('submit', async (e) => {
+    document.getElementById("authForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const email = document.getElementById('emailInput').value;
-      const password = document.getElementById('passInput').value;
+      const email = document.getElementById("emailInput").value;
+      const pass = document.getElementById("passInput").value;
 
-      if (isRegisterMode) {
-        try {
-          const res = await createUserWithEmailAndPassword(auth, email, password);
-          const uid = res.user.uid;
-          const role = roleSelect.value;
-          const name = document.getElementById('nameInput').value;
-
-          await setDoc(doc(db, "users", uid), { uid, name, email, role });
-
-          if (role === 'provider') {
-            await setDoc(doc(db, "providers", uid), {
-              name,
-              category: document.getElementById('catSelect').value,
-              location: document.getElementById('locInput').value,
-              experience: document.getElementById('expInput').value,
-              price: Number(document.getElementById('priceInput').value),
-              rating: 5.0,
-              totalReviews: 0
-            });
-          }
-
-          alert("Registration Successful!");
-          window.location.href = role === 'provider' ? 'provider-dash.html' : 'index.html';
-        } catch(err) {
-          alert("Registration failed: " + err.message);
-        }
+      if (isRegister) {
+        const name = document.getElementById("nameInput").value;
+        const role = document.getElementById("roleInput").value;
+        const res = await registerUser(email, pass, { name, role });
+        alert(res.success ? res.message : res.error);
       } else {
-        try {
-          await signInWithEmailAndPassword(auth, email, password);
-          window.location.href = "index.html";
-        } catch(err) {
-          alert("Login failed: " + err.message);
-        }
+        const res = await loginUser(email, pass);
+        if (res.success) window.location.href = "index.html";
+        else alert(res.error);
       }
+    });
+
+    document.getElementById("googleBtn").addEventListener("click", async () => {
+      const res = await loginWithGoogle();
+      if (res.success) window.location.href = "index.html";
+      else alert(res.error);
     });
   </script>
 </body>

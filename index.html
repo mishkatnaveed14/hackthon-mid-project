@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuickServe - Discover Service Providers</title>
+  <title>QuickServe - Discover Local Experts</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -18,7 +18,7 @@
   <div class="container my-5">
     <div class="text-center mb-5">
       <h1 class="fw-extrabold display-5">Find Trusted Local Service Experts</h1>
-      <p class="text-muted fs-5">Book verified professionals for your everyday home and commercial needs.</p>
+      <p class="text-muted fs-5">Browse, book, track, and review verified service professionals.</p>
     </div>
 
     <!-- Search & Filter Controls -->
@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <!-- Dynamic Providers Grid -->
+    <!-- Dynamic Providers Grid (Minimum 6 Cards Mandatory) -->
     <div class="row g-4" id="providersGrid">
       <div class="text-center py-5">
         <div class="spinner-border text-primary" role="status"></div>
@@ -54,19 +54,18 @@
 
     let allProviders = [];
 
-    // Mandatory Check: Ensure at least 6 provider cards exist
     async function initProviders() {
       let res = await getAllData("providers");
       
+      // Auto-Seed minimum 6 service providers if DB is empty
       if (!res.success || res.data.length === 0) {
-        // Seed default 6 providers dynamically if DB is empty
         const defaultProviders = [
-          { name: "Ali Electricians", category: "Electrical", location: "Karachi", experience: "5 Years", price: 1500, rating: 4.8 },
-          { name: "Ahmed Plumbing Co.", category: "Plumbing", location: "Lahore", experience: "3 Years", price: 1200, rating: 4.5 },
-          { name: "CleanSpace Services", category: "Cleaning", location: "Islamabad", experience: "4 Years", price: 2500, rating: 4.9 },
-          { name: "Cooling Tech AC", category: "AC Repair", location: "Karachi", experience: "6 Years", price: 2000, rating: 4.7 },
-          { name: "Master Painters", category: "Painting", location: "Rawalpindi", experience: "8 Years", price: 5000, rating: 4.6 },
-          { name: "Rapid Fix Plumbing", category: "Plumbing", location: "Karachi", experience: "2 Years", price: 1000, rating: 4.3 }
+          { name: "Ali Electrical Works", category: "Electrical", location: "Karachi", experience: "5 Years", price: 1500, rating: 4.8 },
+          { name: "Ahmed Plumbing Expert", category: "Plumbing", location: "Lahore", experience: "3 Years", price: 1200, rating: 4.5 },
+          { name: "CleanSpace Home Care", category: "Cleaning", location: "Islamabad", experience: "4 Years", price: 2500, rating: 4.9 },
+          { name: "Cooling Tech AC Repair", category: "AC Repair", location: "Karachi", experience: "6 Years", price: 2000, rating: 4.7 },
+          { name: "Master Paint Solutions", category: "Painting", location: "Rawalpindi", experience: "8 Years", price: 5000, rating: 4.6 },
+          { name: "Rapid Fix Plumbers", category: "Plumbing", location: "Karachi", experience: "2 Years", price: 1000, rating: 4.3 }
         ];
 
         for (const p of defaultProviders) {
@@ -82,7 +81,7 @@
     function renderGrid(list) {
       const grid = document.getElementById("providersGrid");
       if (list.length === 0) {
-        grid.innerHTML = `<div class="col-12 text-center text-muted py-5">No providers match your filter criteria.</div>`;
+        grid.innerHTML = `<div class="col-12 text-center text-muted py-5">No service providers match your search filter.</div>`;
         return;
       }
 
@@ -110,7 +109,6 @@
       `).join('');
     }
 
-    // Filter Logic
     document.getElementById("searchInput")?.addEventListener("input", filterProviders);
     document.getElementById("categoryFilter")?.addEventListener("change", filterProviders);
 

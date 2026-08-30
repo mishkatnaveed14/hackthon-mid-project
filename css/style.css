@@ -4,8 +4,8 @@
   --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   --card-bg: #ffffff;
   --border-radius: 14px;
-  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 body {
@@ -52,6 +52,7 @@ body {
   border-radius: 20px;
   font-weight: 600;
   font-size: 0.85rem;
+  display: inline-block;
 }
 
 .status-Pending { background: #fef3c7; color: #92400e; }
